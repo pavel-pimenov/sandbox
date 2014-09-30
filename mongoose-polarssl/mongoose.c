@@ -719,8 +719,8 @@ static int ns_use_cert(SSL_CTX *ctx, const char *pem_file) {
     return -1;
   } else if (pem_file == NULL || pem_file[0] == '\0') {
     return 0;
-  } else if (SSL_CTX_use_certificate_file(ctx, pem_file, 1) == 0 ||
-             SSL_CTX_use_PrivateKey_file(ctx, pem_file, 1) == 0) {
+  } else if (SSL_CTX_use_certificate_file(ctx, pem_file, SSL_FILETYPE_PEM) == 0 ||
+             SSL_CTX_use_PrivateKey_file(ctx, pem_file, SSL_FILETYPE_PEM) == 0) {
     return -2;
   } else {
     SSL_CTX_set_mode(ctx, SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
@@ -736,7 +736,9 @@ struct ns_connection *ns_bind(struct ns_mgr *srv, const char *str, void *data) {
   int use_ssl, proto;
   char cert[100], ca_cert[100];
   sock_t sock;
+#ifdef NS_ENABLE_SSL
   const SSL_METHOD * ssl_method;
+#endif
 
   ns_parse_address(str, &sa, &proto, &use_ssl, cert, ca_cert);
   if (use_ssl && cert[0] == '\0') return NULL;
@@ -1113,6 +1115,9 @@ struct ns_connection *ns_connect(struct ns_mgr *mgr,
   union socket_address sa;
   char cert[100], ca_cert[100];
   int connect_ret_val, use_ssl, proto;
+#ifdef NS_ENABLE_SSL
+  const SSL_METHOD * ssl_method;
+#endif
 
   ns_parse_address(address, &sa, &proto, &use_ssl, cert, ca_cert);
   if ((sock = socket(AF_INET, proto, 0)) == INVALID_SOCKET) {
@@ -1138,7 +1143,8 @@ struct ns_connection *ns_connect(struct ns_mgr *mgr,
 
 #ifdef NS_ENABLE_SSL
   if (use_ssl) {
-    if ((nc->ssl_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL ||
+    ssl_method = SSLv23_client_method();
+    if ((nc->ssl_ctx = SSL_CTX_new(ssl_method)) == NULL ||
         ns_use_cert(nc->ssl_ctx, cert) != 0 ||
         ns_use_ca_cert(nc->ssl_ctx, ca_cert) != 0 ||
         (nc->ssl = SSL_new(nc->ssl_ctx)) == NULL) {
@@ -4290,8 +4296,8 @@ int mg_terminate_ssl(struct mg_connection *c, const char *cert) {
   DBG(("%p MITM", conn));
   if ((ctx = SSL_CTX_new(SSLv23_server_method())) == NULL) return 0;
 
-  SSL_CTX_use_certificate_file(ctx, cert, 1);
-  SSL_CTX_use_PrivateKey_file(ctx, cert, 1);
+  SSL_CTX_use_certificate_file(ctx, cert, SSL_FILETYPE_PEM);
+  SSL_CTX_use_PrivateKey_file(ctx, cert, SSL_FILETYPE_PEM);
   SSL_CTX_use_certificate_chain_file(ctx, cert);
 
   // When clear-text reply is pushed to client, switch to SSL mode.
@@ -4308,6 +4314,7 @@ int mg_terminate_ssl(struct mg_connection *c, const char *cert) {
   return 1;
 }
 #endif
+
 
 int mg_forward(struct mg_connection *c, const char *addr) {
   static const char ok[] = "HTTP/1.1 200 OK\r\n\r\n";

@@ -22,6 +22,8 @@
 
 #include "polarssl_compat.h"
 
+#include <stdlib.h>
+
 #ifdef NS_ENABLE_POLARSSL
 
 #include "polarssl/entropy.h"
@@ -31,7 +33,6 @@
 #include "polarssl/ssl.h"
 #include "polarssl/net.h"
 #include "polarssl/error.h"
-#include "polarssl/debug.h"
 #if defined(POLARSSL_SSL_CACHE_C)
 #include "polarssl/ssl_cache.h"
 #endif
@@ -41,20 +42,54 @@
 #define DBG(x) do { printf("[POLAR-SSL] %-20s ", __FUNCTION__); printf x; putchar('\n'); \
   fflush(stdout); } while(0)
 // TODO - fix copy-paste
+// TODO - remove debug
+static void my_debug( void *ctx, int level, const char *str )
+{
+    ((void) level);
+
+    fprintf( (FILE *) ctx, "%s", str );
+    fflush(  (FILE *) ctx  );
+}
 
 SSL* SSL_new(SSL_CTX *ctx)
 {
     DBG(("SSL_new %p", ctx));
-    return 0;
+    return &ctx->ssl_ctx;
 }
+
 SSL_CTX* SSL_CTX_new(const SSL_METHOD *meth)
 {
+    int ret;
+    SSL_CTX* ctx = (SSL_CTX *) calloc(1,sizeof(SSL_CTX));
     DBG(("SSL_CTX_new %p", meth));
-    return 0;
+    if( ( ret = ssl_init( &ctx->ssl_ctx) ) != 0 )
+    {
+        printf( " failed\n  ! ssl_init returned %d\n\n", ret );
+        return NULL;
+    }
+    ssl_set_endpoint( &ctx->ssl_ctx, SSL_IS_SERVER );
+    ssl_set_authmode( &ctx->ssl_ctx, SSL_VERIFY_NONE );
+
+    ssl_set_rng( &ctx->ssl_ctx, ctr_drbg_random, &ctx->ctr_drbg );
+    ssl_set_dbg( &ctx->ssl_ctx, my_debug, stdout );
+
+#if defined(POLARSSL_SSL_CACHE_C)
+    ssl_set_session_cache( &ctx->ssl_ctx, ssl_cache_get, &ctx->cache,
+                                 ssl_cache_set, &ctx->cache );
+#endif
+
+    return ctx;
 }
-void  SSL_CTX_free(SSL_CTX *ssl_ctx)
+void  SSL_CTX_free(SSL_CTX *ssl)
 {
-    DBG(("SSL_CTX_free %p", ssl_ctx));
+    DBG(("SSL_CTX_free %p", ssl));
+#if defined(POLARSSL_SSL_CACHE_C)
+    ssl_cache_free( &ssl->cache );
+#endif
+    ctr_drbg_free( &ssl->ctr_drbg);
+    x509_crt_free(&ssl->cert);
+    pk_free(&ssl->key);
+    free(ssl);
 }
 int	  SSL_get_error(const SSL *s,int ret_code)
 {
@@ -67,13 +102,56 @@ const SSL_METHOD *SSLv23_server_method(void)
 void  SSL_free(SSL *ssl) { DBG((__FUNCTION__)); }
 void  SSL_CTX_set_verify(SSL_CTX *ctx,int mode,int (*callback)(int, X509_STORE_CTX *)) { DBG((__FUNCTION__)); }
 int   SSL_CTX_load_verify_locations(SSL_CTX *ctx, const char *CAfile,	const char *CApath) { DBG((__FUNCTION__)); }
-int	  SSL_CTX_use_certificate_file(SSL_CTX *ctx, const char *file, int type) { DBG((__FUNCTION__)); }
-int	  SSL_CTX_use_PrivateKey_file(SSL_CTX *ctx, const char *file, int type) { DBG((__FUNCTION__)); }
+int	  SSL_CTX_use_certificate_file(SSL_CTX *ctx, const char *file, int type) 
+{
+  DBG((__FUNCTION__)); 
+  x509_crt_init( &ctx->cert);
+  if(type == SSL_FILETYPE_PEM)
+   if( x509_crt_parse_file( &ctx->cert, file ) == 0) 
+      return 1;
+  return 0;
+}
+int	  SSL_CTX_use_PrivateKey_file(SSL_CTX *ctx, const char *file, int type) 
+{ 
+  DBG((__FUNCTION__)); 
+  pk_init( &ctx->key );
+  if(type == SSL_FILETYPE_PEM)
+   if( pk_parse_keyfile( &ctx->key, file, "" ) == 0 )
+       return 1;
+   return 0;
+}
 int	  SSL_CTX_use_certificate_chain_file(SSL_CTX *ctx, const char *file) { DBG((__FUNCTION__)); }
 const SSL_METHOD *SSLv23_client_method(void) { DBG((__FUNCTION__)); }
 
-int	  SSL_set_fd(SSL *s, int fd) { DBG((__FUNCTION__)); }
-int   SSL_accept(SSL *ssl) { DBG((__FUNCTION__)); }
+int	  SSL_set_fd(SSL *s, int fd) 
+{
+     DBG((__FUNCTION__)); 
+     ssl_set_bio(s, net_recv, &fd,
+                     net_send, &fd);
+     return 1; // TODO - fix magic 
+}
+int   SSL_accept(SSL *ssl) 
+{
+    int ret;
+    DBG((__FUNCTION__)); 
+    while( ( ret = ssl_handshake( ssl ) ) != 0 )
+    {
+        if( ret != POLARSSL_ERR_NET_WANT_READ && ret != POLARSSL_ERR_NET_WANT_WRITE )
+        {
+            printf( " failed\n  ! ssl_handshake returned %d\n\n", ret );
+            return 0;
+        }
+    }
+    return 1;
+/*
+if( ( ret = net_accept( listen_fd, &client_fd, NULL ) ) != 0 )
+    {
+        printf( " failed\n  ! net_accept returned %d\n\n", ret );
+        goto exit;
+    }
+*/
+
+}
 int   SSL_connect(SSL *ssl) { DBG((__FUNCTION__)); }
 int   SSL_read(SSL *ssl,void *buf,int num) { DBG((__FUNCTION__)); }
 int   SSL_write(SSL *ssl,const void *buf,int num) { DBG((__FUNCTION__)); }
@@ -82,24 +160,12 @@ long  SSL_CTX_ctrl(SSL_CTX *ctx,int cmd, long larg, void *parg) { DBG((__FUNCTIO
 
 
 static entropy_context g_entropy;
-static ctr_drbg_context g_ctr_drbg;
 static ssl_context g_ssl;
-static x509_crt g_srvcert;
-static pk_context g_pkey;
-#if defined(POLARSSL_SSL_CACHE_C)
-static ssl_cache_context g_cache;
-#endif
 
 void SSL_library_destroy(void)
 {
     DBG(("SSL_library_destroy"));
-    x509_crt_free( &g_srvcert );
-    pk_free( &g_pkey );
     ssl_free( &g_ssl );
-#if defined(POLARSSL_SSL_CACHE_C)
-    ssl_cache_free( &g_cache );
-#endif
-    ctr_drbg_free( &g_ctr_drbg );
     entropy_free( &g_entropy );
 }
 int SSL_library_init(void)
@@ -107,18 +173,10 @@ int SSL_library_init(void)
     int ret = 0;
     DBG(("SSL_library_init"));
     memset( &g_ssl, 0, sizeof(ssl_context) );
-    x509_crt_init( &g_srvcert );
-    pk_init( &g_pkey );
     entropy_init( &g_entropy );
 #if defined(POLARSSL_DEBUG_C)
     debug_set_threshold( DEBUG_LEVEL );
 #endif
-
-    if( ( ret = ssl_init( &g_ssl ) ) != 0 )
-    {
-        printf( " failed\n  ! ssl_init returned %d\n\n", ret );
-        return ret;
-    }
 
 #if 0
     /*

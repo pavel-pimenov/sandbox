@@ -27,13 +27,20 @@
 #ifdef NS_ENABLE_POLARSSL
 
 #include "polarssl/ssl.h"
-struct MG_SSL
-{
-     void* dummy;
-};
+#include "polarssl/ctr_drbg.h"
+#if defined(POLARSSL_SSL_CACHE_C)
+#include "polarssl/ssl_cache.h"
+#endif
+
 struct MG_SSL_CTX
 {
-    void* dummy;
+    ssl_context ssl_ctx;
+    x509_crt    cert;
+    pk_context  key; 
+    ctr_drbg_context ctr_drbg;
+#ifdef POLARSSL_SSL_CACHE_C
+    ssl_cache_context cache;
+#endif
 };
 struct MG_X509_STORE_CTX
 {
@@ -43,7 +50,7 @@ struct SSL_METHOD
 {
     void* dummy;
 };
-typedef struct MG_SSL SSL; 
+typedef struct ssl_context SSL;  
 typedef struct MG_SSL_CTX SSL_CTX; 
 typedef struct MG_X509_STORE_CTX X509_STORE_CTX; 
 typedef struct MG_SSL_METHOD SSL_METHOD;
@@ -76,8 +83,11 @@ int   SSL_write(SSL *ssl,const void *buf,int num);
 
 #define SSL_ERROR_WANT_READ		2
 #define SSL_ERROR_WANT_WRITE		3
-
 #define SSL_CTRL_MODE				33
+
+#define X509_FILETYPE_PEM	1
+#define SSL_FILETYPE_PEM	X509_FILETYPE_PEM
+
 
 #define SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER 0x00000002L
 #define SSL_CTX_set_mode(ctx,op) \

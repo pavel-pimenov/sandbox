@@ -1,2 +1,0 @@
-gcc -o build-mongoose-ok hello_world.c mongoose.c -W -Wall -Wno-unused-parameter -O2 -lstdc++ -lpthread -ldl -lz
-valgrind --leak-check=full --leak-resolution=med ./build-mongoose-ok

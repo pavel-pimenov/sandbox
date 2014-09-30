@@ -17,6 +17,19 @@
 //
 // $Date: 2014-09-16 06:47:40 UTC $
 
+
+#define NS_ENABLE_SSL
+#define NS_ENABLE_DEBUG
+
+#if defined(_MSC_VER)
+#if defined(_DEBUG)
+#pragma comment(lib, "libeay32MTd.lib")
+#pragma comment(lib, "ssleay32MTd.lib")
+#else
+#pragma comment(lib, "libeay32MT.lib")
+#pragma comment(lib, "ssleay32MT.lib")
+#endif
+#endif
 #ifdef NOEMBED_NET_SKELETON
 #include "net_skeleton.h"
 #else
@@ -930,12 +943,16 @@ static void ns_write_to_socket(struct ns_connection *conn) {
         conn->flags |= NSF_CLOSE_IMMEDIATELY;
       }
     }
+    else
+    {
+        DBG((" %p %d -> %d bytes (SSL)", conn, conn->flags, n));
+    }
   } else
 #endif
-  { n = (int) send(conn->sock, io->buf, io->len, 0); }
-
-  DBG(("%p %d -> %d bytes", conn, conn->flags, n));
-
+  { 
+   n = (int) send(conn->sock, io->buf, io->len, 0); 
+   DBG(("%p %d -> %d bytes", conn, conn->flags, n));
+  }
   ns_call(conn, NS_SEND, &n);
   if (ns_is_error(n)) {
     conn->flags |= NSF_CLOSE_IMMEDIATELY;

@@ -749,8 +749,7 @@ struct ns_connection *ns_bind(struct ns_mgr *srv, const char *str, void *data) {
       }
     }
 #endif
-
-    DBG(("%p sock %d/%d ssl %p %p", nc, sock, proto, nc->ssl_ctx, nc->ssl));
+    DBG(("%p sock %d/%d ssl %p %p", nc, sock, proto, nc ? nc->ssl_ctx : 0, nc? nc->ssl : 0));
   }
 
   return nc;

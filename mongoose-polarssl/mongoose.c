@@ -17,11 +17,19 @@
 //
 // $Date: 2014-09-16 06:47:40 UTC $
 
-
 #define NS_ENABLE_SSL
+
+#ifndef NS_ENABLE_DEBUG
 #define NS_ENABLE_DEBUG
+#endif
+
+#include "polarssl_compat.h"
+
 
 #if defined(_MSC_VER)
+#ifdef NS_ENABLE_POLARSSL
+ #pragma comment(lib, "C:\\downloads\\polarssl-1.3.8\\visualc\\VS2010\\Debug\\PolarSSL.lib")
+#else
 #if defined(_DEBUG)
 #pragma comment(lib, "libeay32MTd.lib")
 #pragma comment(lib, "ssleay32MTd.lib")
@@ -29,6 +37,7 @@
 #pragma comment(lib, "libeay32MT.lib")
 #pragma comment(lib, "ssleay32MT.lib")
 #endif
+#endif // NS_ENABLE_POLARSSL
 #endif
 #ifdef NOEMBED_NET_SKELETON
 #include "net_skeleton.h"
@@ -156,7 +165,11 @@ typedef int sock_t;
 #ifdef __APPLE__
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #endif
-#include <openssl/ssl.h>
+#ifdef NS_ENABLE_POLARSSL
+ #include "polarssl_compat.h"
+#else
+ #include <openssl/ssl.h>
+#endif // NS_ENABLE_POLARSSL
 #else
 typedef void *SSL;
 typedef void *SSL_CTX;
@@ -723,6 +736,7 @@ struct ns_connection *ns_bind(struct ns_mgr *srv, const char *str, void *data) {
   int use_ssl, proto;
   char cert[100], ca_cert[100];
   sock_t sock;
+  const SSL_METHOD * ssl_method;
 
   ns_parse_address(str, &sa, &proto, &use_ssl, cert, ca_cert);
   if (use_ssl && cert[0] == '\0') return NULL;
@@ -741,7 +755,8 @@ struct ns_connection *ns_bind(struct ns_mgr *srv, const char *str, void *data) {
 
 #ifdef NS_ENABLE_SSL
     if (use_ssl) {
-      nc->ssl_ctx = SSL_CTX_new(SSLv23_server_method());
+      ssl_method = SSLv23_server_method(); 
+      nc->ssl_ctx = SSL_CTX_new(ssl_method);
       if (ns_use_cert(nc->ssl_ctx, cert) != 0 ||
           ns_use_ca_cert(nc->ssl_ctx, ca_cert) != 0) {
         ns_close_conn(nc);

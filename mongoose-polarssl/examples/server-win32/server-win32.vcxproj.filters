@@ -21,12 +21,18 @@
     <ClInclude Include="..\..\mongoose.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\polarssl_compat.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\server.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\mongoose.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\polarssl_compat.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

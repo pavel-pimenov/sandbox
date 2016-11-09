@@ -3,7 +3,7 @@
 Module Module1
 
     Sub Main()
-        Dim aviFile As MediaFile = New MediaFile("D:\vm-share\mediainfo-crash\S09E15.mkv")
+        Dim aviFile As MediaFile = New MediaFile("S09E15.mkv")
 
         Console.WriteLine()
         Console.WriteLine("General ---------------------------------")
@@ -33,7 +33,7 @@ Module Module1
             Console.WriteLine("Frame size  : {0}", aviFile.Video(0).FrameSize.ToString())
         End If
 
-        Console.ReadLine()
+        ''Console.ReadLine()
     End Sub
 End Module
 

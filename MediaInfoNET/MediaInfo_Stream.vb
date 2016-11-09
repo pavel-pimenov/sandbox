@@ -137,23 +137,28 @@ Public Class MediaInfo_Stream
 
                     If value.Contains(":") Then
                         'Example: 02:15:30.004
-                        Return getMillisFromString(value)
+                        Return GetMillisFromString(value)
                     Else
                         'Example: 2h 15mn 30s 4ms
                         Dim x As Long = 0
-                        Dim p() As String = Split(value)
-                        For Each s As String In p
-                            If s.Contains("ms") Then
-                                x += CLng(Trim(s.Replace("ms", "")))
-                            ElseIf s.Contains("s") Then
-                                x += CLng(Trim(s.Replace("s", ""))) * 1000
-                            ElseIf s.Contains("mn") Then
-                                x += CLng(Trim(s.Replace("mn", ""))) * MIN * 1000
-                            ElseIf s.Contains("h") Then
-                                x += CLng(Trim(s.Replace("h", ""))) * HR * 1000
-                            End If
-                        Next
-                        Return x
+                        Try
+                            Dim p() As String = Split(value)
+                            For Each s As String In p
+                                If s.Contains("ms") Then
+                                    x += CLng(Trim(s.Replace("ms", "")))
+                                ElseIf s.Contains("s") Then
+                                    x += CLng(Trim(s.Replace("s", ""))) * 1000
+                                ElseIf s.Contains("mn") Then
+                                    x += CLng(Trim(s.Replace("mn", ""))) * MIN * 1000
+                                ElseIf s.Contains("h") Then
+                                    x += CLng(Trim(s.Replace("h", ""))) * HR * 1000
+                                End If
+                            Next
+                            Return x
+                        Catch ex As Exception
+                            x = 0
+                        End Try
+
                     End If
 
                 End If

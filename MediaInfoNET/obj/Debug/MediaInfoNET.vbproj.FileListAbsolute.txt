@@ -1,0 +1,8 @@
+Q:\git\sandbox\MediaInfoNET\bin\Debug\MediaInfoNET.dll
+Q:\git\sandbox\MediaInfoNET\bin\Debug\MediaInfoNET.pdb
+Q:\git\sandbox\MediaInfoNET\bin\Debug\MediaInfoNET.xml
+Q:\git\sandbox\MediaInfoNET\obj\Debug\MediaInfoNET.Resources.resources
+Q:\git\sandbox\MediaInfoNET\obj\Debug\MediaInfoNET.vbproj.GenerateResource.Cache
+Q:\git\sandbox\MediaInfoNET\obj\Debug\MediaInfoNET.dll
+Q:\git\sandbox\MediaInfoNET\obj\Debug\MediaInfoNET.xml
+Q:\git\sandbox\MediaInfoNET\obj\Debug\MediaInfoNET.pdb

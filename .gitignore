@@ -12,11 +12,3 @@
 *.la
 *.a
 
-/mongoose-polarssl/examples/server-win32/server-win32.sdf
-
-/mongoose-polarssl/examples/server-win32/*.opensdf
-/mongoose-polarssl/examples/server-win32/Debug/*
-/mongoose-polarssl/examples/server-win32/Release/*
-/mongoose-polarssl/examples/server-win32/ipch/*
-
-

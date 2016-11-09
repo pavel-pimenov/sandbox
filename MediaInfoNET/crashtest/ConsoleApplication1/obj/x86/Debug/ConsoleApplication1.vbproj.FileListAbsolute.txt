@@ -1,0 +1,12 @@
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\bin\Debug\ConsoleApplication1.xml
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.Resources.resources
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.vbproj.GenerateResource.Cache
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.exe
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.xml
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.pdb
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\bin\Debug\MediaInfoNET.dll
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\bin\Debug\MediaInfoNET.pdb
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\bin\Debug\MediaInfoNET.xml
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Debug\ConsoleApplication1.vbprojResolveAssemblyReference.cache

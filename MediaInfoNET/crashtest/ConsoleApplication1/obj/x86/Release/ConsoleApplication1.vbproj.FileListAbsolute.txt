@@ -1,0 +1,8 @@
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\bin\Release\ConsoleApplication1.exe
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\bin\Release\ConsoleApplication1.pdb
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\bin\Release\ConsoleApplication1.xml
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Release\ConsoleApplication1.Resources.resources
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Release\ConsoleApplication1.vbproj.GenerateResource.Cache
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Release\ConsoleApplication1.exe
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Release\ConsoleApplication1.xml
+Q:\git\sandbox\MediaInfoNET\crashtest\ConsoleApplication1\obj\x86\Release\ConsoleApplication1.pdb

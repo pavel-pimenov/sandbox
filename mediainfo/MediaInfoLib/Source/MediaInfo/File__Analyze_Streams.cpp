@@ -884,6 +884,8 @@ void File__Analyze::Fill (stream_t StreamKind, size_t StreamPos, size_t Paramete
     {
         Clear(StreamKind, StreamPos, Video_FrameRate_Num);
         Clear(StreamKind, StreamPos, Video_FrameRate_Den);
+        static int g_count = 0;
+        printf("File__Analyze::Fill count = %d\r\n", ++g_count);
 
         if (Value)
         {

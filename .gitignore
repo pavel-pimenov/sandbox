@@ -17,4 +17,8 @@ MediaInfo.res
 MediaInfoShellExt.h
 MediaInfoShellExt.res
 zlib.res
+*.idb
+*.VC.opendb
+*.VC.db
+*.ipch
 

@@ -567,7 +567,7 @@ bool File_Mpega::FileHeader_Begin()
 bool File_Mpega::Synchronize()
 {
     //Tags
-    bool Tag_Found_Begin = false;
+    bool Tag_Found_Begin;
     if (!File__Tags_Helper::Synchronize(Tag_Found_Begin))
         return false;
     if (Tag_Found_Begin)

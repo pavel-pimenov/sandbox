@@ -310,6 +310,7 @@ File_Id3v2::File_Id3v2()
 //---------------------------------------------------------------------------
 bool File_Id3v2::Static_Synchronize_Tags(const int8u* Buffer, size_t Buffer_Offset, size_t Buffer_Size, bool &Tag_Found)
 {
+    Tag_Found = false;
     //Buffer size
     if (Buffer_Offset+3>Buffer_Size)
         return false;

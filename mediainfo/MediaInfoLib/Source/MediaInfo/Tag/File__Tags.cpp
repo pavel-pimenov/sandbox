@@ -135,6 +135,7 @@ bool File__Tags_Helper::Read_Buffer_Continue()
 //---------------------------------------------------------------------------
 bool File__Tags_Helper::Synchronize(bool &Tag_Found, size_t Synchro_Offset)
 {
+    Tag_Found = false;
     //Buffer size
     if (Parser)
     {
@@ -435,7 +436,11 @@ void File__Tags_Helper::GoTo (int64u GoTo, const char* ParserName)
     }
 
     //Trying to parse tags
-    while (!TagSizeIsFinal && DetectBeginOfEndTags_Test());
+    while (!TagSizeIsFinal && DetectBeginOfEndTags_Test())
+    {
+        static int g_count = 0;
+        printf("TagSizeIsFinal = %d\r\n",++g_count);
+    }
 
     //If a jump is requested
     if (!TagSizeIsFinal)

@@ -11,4 +11,10 @@
 *.lai
 *.la
 *.a
+*.tlog
+*.exp
+MediaInfo.res
+MediaInfoShellExt.h
+MediaInfoShellExt.res
+zlib.res
 

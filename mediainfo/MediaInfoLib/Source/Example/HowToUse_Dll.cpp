@@ -44,7 +44,7 @@ int main (int /*argc*/, Char * /*argv[]*/)
 
     //An example of how to use the library
     To_Display += __T("\r\n\r\nOpen\r\n");
-    MI.Open(__T("Example.ogg"));
+    MI.Open(__T("file1.mkv"));
 
     To_Display += __T("\r\n\r\nInform with Complete=false\r\n");
     MI.Option(__T("Complete"));

@@ -882,6 +882,9 @@ void File__Analyze::Fill (stream_t StreamKind, size_t StreamPos, size_t Paramete
 {
     if (StreamKind==Stream_Video && Parameter==Video_FrameRate)
     {
+#ifdef _DEBUG
+        Value = 23.98; // Emulation crash https://sourceforge.net/p/mediainfo/bugs/1022/
+#endif
         Clear(StreamKind, StreamPos, Video_FrameRate_Num);
         Clear(StreamKind, StreamPos, Video_FrameRate_Den);
         static int g_count = 0;

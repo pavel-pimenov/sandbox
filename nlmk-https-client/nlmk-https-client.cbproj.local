@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+  <Transactions>
+    <Transaction>2019.08.17 10:11:10.197,=C:\Users\pavel\Documents\Embarcadero\Studio\Projects\Project2PCH1.h</Transaction>
+    <Transaction>2019.08.17 10:11:12.371,=C:\Users\pavel\Documents\Embarcadero\Studio\Projects\File1.cpp</Transaction>
+    <Transaction>2019.08.17 10:14:18.049,C:\git\sandbox\cbuilder-https-client\nlmk-https-client.cpp=C:\Users\pavel\Documents\Embarcadero\Studio\Projects\File1.cpp</Transaction>
+    <Transaction>2019.08.17 10:14:39.831,C:\git\sandbox\cbuilder-https-client\PCH1.h=C:\Users\pavel\Documents\Embarcadero\Studio\Projects\Project2PCH1.h</Transaction>
+    <Transaction>2019.08.17 10:14:57.493,C:\git\sandbox\cbuilder-https-client\nlmk-https-client.cbproj=C:\Users\pavel\Documents\Embarcadero\Studio\Projects\Project2.cbproj</Transaction>
+  </Transactions>
+</BorlandProject>

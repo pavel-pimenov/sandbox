@@ -221,7 +221,7 @@ string postQuery(const char* p_url,
 	//InternetSetOption(hSession, INTERNET_OPTION_SEND_TIMEOUT, &CFlyServerConfig::g_winet_send_timeout, sizeof(CFlyServerConfig::g_winet_send_timeout));
 	if (hSession)
 	{
-		DWORD dwFlags = 0; //INTERNET_FLAG_NO_COOKIES|INTERNET_FLAG_RELOAD|INTERNET_FLAG_NO_CACHE_WRITE|INTERNET_FLAG_PRAGMA_NOCACHE;
+		DWORD dwFlags = INTERNET_FLAG_SECURE; // INTERNET_FLAG_SECURE | INTERNET_FLAG_IGNORE_CERT_CN_INVALID | INTERNET_FLAG_IGNORE_CERT_DATE_INVALID
 		CInternetHandle hConnect(InternetConnectA(hSession, p_url, p_port, NULL, NULL, INTERNET_SERVICE_HTTP, dwFlags, NULL));
 		if (hConnect)
 		{
